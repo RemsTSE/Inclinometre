@@ -22,7 +22,7 @@ Le projet vise à développer un programme permettant de simuler un inclinomètr
 
 1. Afficher le resultat du Broadcast avec les adresses MAC
 2. Quand il y a association :
-- Mettre les adresses de couleurs vertes 
+- Mettre les adresses MAC de couleurs vertes 
 - Mettre les valeurs des capteurs : Pitch et Roll
 4. Afficher le resultat de la comparaison entre les valeurs des angles (Pitch et Roll) :
  - quand il y a un trop grand écart (défini préalablement), sorti d'un son spécifique Pitch et Roll + attribution d'une couleur
