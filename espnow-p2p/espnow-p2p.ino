@@ -1,6 +1,7 @@
 #include <M5Stack.h>
 #include <Ticker.h>
 #include "espnow-sta.h"
+#include "imu.h"
 
 #define BACKGROUND_COLOR BLACK
 #define FOREGROUND_COLOR WHITE
@@ -10,6 +11,7 @@ int choice;
 int lastPeerCount;
 int messageCount;
 Ticker broadcastTicker;
+IMU imu;
 
 void setLcd() {
     M5.Lcd.setCursor(0, 0);
@@ -25,9 +27,10 @@ void onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     if (data_len == 3 && data[0] == 0xaa && data[1] == 0x66) {
         if (lastPeerCount < espnow.peerlist.count) {
             lastPeerCount = espnow.peerlist.count;
+            espnow.ackPeer(const_cast<uint8_t*>(mac_addr));
             printPeerList();
         }
-    } else if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {
+    } else if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {        
         printPeerList();
     } else {
         messageCount++;
@@ -43,6 +46,8 @@ void broadcast() {
 
 void setup() {
     M5.begin();
+    M5.IMU.Init();
+    M5.Power.begin();  
     choice = 0;
     lastPeerCount = 0;
     messageCount = 0;
@@ -82,17 +87,23 @@ void printPeerList() {
 void loop() {
     M5.update();
     if (M5.BtnA.wasPressed()) {
-        if (espnow.peerlist.count > 0) {
-            choice++;
-            choice = choice % espnow.peerlist.count;
-            printPeerList();
-        }
+        imu.getData();
+        int16_t roll = imu.sendRoll();
+        // convert to number to string
+        Serial.println(roll);
+        char str[3];
+        sprintf(str, "%d", roll);
+        espnow.multicastSendData(str, 3);
     }
     if (M5.BtnB.wasPressed()) {
-        if (espnow.peerlist.count > 0) {
-            espnow.ackPeer(espnow.peerlist.list[choice].peer_addr);
-            printPeerList();
-        }
+        // send imu data
+        imu.getData();
+        int16_t pitch = imu.sendPitch(); 
+        // convert to number to string
+        Serial.println(pitch);
+        char str[3];
+        sprintf(str, "%d", pitch);
+        espnow.multicastSendData(str, 3);
     }
     if (M5.BtnC.wasPressed()) {
         char *str = "hi";

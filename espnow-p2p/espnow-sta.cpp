@@ -64,7 +64,7 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
             Serial.println(macStr);
             if (ensurePeer(mac_addr) == ADD_PEER_SUCCESS) {
                 addToList(mac_addr, true);
-            }
+            } 
         }
     }
 
@@ -77,12 +77,12 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
     }
 
     Serial.printf("recv data from %s: ", macStr);
-    Serial.write(data, data_len);
+    Serial.printf("len: %d", data_len);
     for (int i = 0; i < data_len; i++) {
         Serial.printf(" %02x", data[i]);
     }
     Serial.println();
-    
+
     if (recvCallBack != NULL) {
         recvCallBack(mac_addr, data, data_len);
     }

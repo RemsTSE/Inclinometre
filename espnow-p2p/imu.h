@@ -12,6 +12,6 @@ public:
     float yaw;
 
     void getData();
-    uint8_t sendPitch();
-    uint8_t sendRoll();
+    int16_t sendPitch();
+    int16_t sendRoll();
 };
