@@ -1,11 +1,13 @@
 
 #include <M5Stack.h>
 
-class IMU {
-    public:
-        imu();
-        ~imu();
+class IMU
+{
+public:
+    imu();
+    ~imu();
 
+<<<<<<< Updated upstream
         float pitch;
         float roll ;
         float yaw ;
@@ -22,4 +24,11 @@ class IMU {
     
    
     
+=======
+    float pitch;
+    float roll;
+    float yaw;
+
+    void getData();
+>>>>>>> Stashed changes
 };

@@ -21,12 +21,13 @@ void setLcd() {
 }
 
 void onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+    const uint8_t identificationByte = 0xAA;
     if (data_len == 2 && data[0] == 0xaa && data[1] == 0x66) {
         if (lastPeerCount < espnow.peerlist.count) {
             lastPeerCount = espnow.peerlist.count;
             printPeerList();
         }
-    } else if (data_len == 2 && data[0] == 0xaa && data[1] == 0x77) {
+    } else if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {
         printPeerList();
     } else {
         messageCount++;
