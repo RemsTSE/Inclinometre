@@ -13,7 +13,6 @@ float pitch = 0.0F;
 float roll  = 0.0F;
 float yaw   = 0.0F;
 
-float temp = 0.0F;
 
 /* After M5Core is started or reset
 the program in the setUp () function will be run, and this part will only be run
@@ -47,8 +46,7 @@ void loop() {
     M5.IMU.getAhrsData(
         &pitch, &roll,
         &yaw);  // Stores the inertial sensor attitude.  存储惯性传感器的姿态
-    M5.IMU.getTempData(&temp);  // Stores the inertial sensor temperature to
-                                // temp.  存储惯性传感器的温度
+    
 
     /* The M5Core screen is 320x240 pixels, starting at the top left corner of
     the screen (0,0). gyroscope output related M5Stack屏幕像素为
@@ -75,10 +73,8 @@ void loop() {
     M5.Lcd.setCursor(0, 142);
     M5.Lcd.printf("%5.2f  %5.2f  %5.2f deg", pitch, roll, yaw);
 
-    // Inertial sensor temperature output related
-    //惯性传感器温度输出相关
-    M5.Lcd.setCursor(0, 175);
-    M5.Lcd.printf("Temperature : %.2f C", temp);
+    
+    
 
     delay(10);  // Delay 10ms  //延迟10ms
 }
