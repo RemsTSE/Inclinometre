@@ -15,4 +15,16 @@ Le projet vise à développer un programme permettant de simuler un inclinomètr
 4. Une fois qu'un appareil reçoit un message broadcast, l'appareil envoie les informations suivantesen entier:
     - l'angle de roulis
     - l'angle de tangage
-5. Si le TTL d'un appareil est dépassé, l'appareil est supprimé de la liste des appareils connectés.
+5. Si le TTL d'un appareil est dépassé, l'appareil est supprimé de la liste des appareils connectés
+
+
+## Affichage de l'interface utilisateur
+
+1. Afficher le resultat du Broadcast avec les adresses MAC
+2. Quand il y a association :
+- Mettre les adresses de couleurs vertes 
+- Mettre les valeurs des capteurs : Pitch et Roll
+4. Afficher le resultat de la comparaison entre les valeurs des angles (Pitch et Roll) :
+ - quand il y a un trop grand écart (défini préalablement), sorti d'un son spécifique Pitch et Roll + attribution d'une couleur
+ - quand il n'y a pas d'écart important --> Affichage : "Valeurs comparées correctes"
+
