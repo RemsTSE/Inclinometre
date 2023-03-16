@@ -9,14 +9,17 @@ class IMU {
         float pitch;
         float roll ;
         float yaw ;
-        
+
+        void getData() {};
+
+        uint8_t sendPitch();
+        uint8_t sendRoll();
 
 
 
 
 
-void getData() {};
     
    
     
-}
+};
