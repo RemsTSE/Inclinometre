@@ -1,16 +1,15 @@
 #include "imu.h"
 
 
-
 IMU::imu(){
     pitch= 0.0F;
     roll= 0.0F;
     yaw= 0.0F;
-}
+};
 
 IMU::~imu(){
-    
-}
+
+};
 
 void IMU::getData(){
  
@@ -24,4 +23,14 @@ void IMU::getData(){
         M5.Lcd.setCursor(0, 142);
         M5.Lcd.printf("%5.2f  %5.2f  deg", pitch, roll);
 
-}
+};
+
+uint8_t IMU::sendPitch(){
+    int int_pitch = floor(pitch);
+    return uint8_t(int_pitch);
+};
+
+uint8_t IMU::sendRoll(){
+    int int_roll = floor(roll);
+    return uint8_t(int_roll);
+};
