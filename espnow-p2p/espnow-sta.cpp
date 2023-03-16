@@ -56,14 +56,10 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
         mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
 
     // Add an identification byte to restrict p2p connection
-    const uint8_t identificationByte = 0xAA;
-    if (data_len < 3 || data[2] != identificationByte) {
-        Serial.printf("recv data error: ");
-        return;
-    }
+    const uint8_t identificationByte = 0xaa;
 
     if (isBroadcasting) {
-        if (data_len == 2 && data[0] == 0xaa && data[1] == 0x77) {
+        if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {
             Serial.printf("recv peer confirm: ");
             Serial.println(macStr);
             if (ensurePeer(mac_addr) == ADD_PEER_SUCCESS) {
@@ -72,7 +68,7 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
         }
     }
 
-    if (data_len == 2 && data[0] == 0xaa && data[1] == 0x66) {
+    if ( data_len == 3 &&data[0] == 0xaa && data[1] == 0x66 && data[2] == identificationByte) {
         Serial.printf("recv peer broadcast: ");
         Serial.println(macStr);
         if (peerIndex(mac_addr, false) == -1) {
@@ -80,6 +76,13 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
         }
     }
 
+    Serial.printf("recv data from %s: ", macStr);
+    Serial.write(data, data_len);
+    for (int i = 0; i < data_len; i++) {
+        Serial.printf(" %02x", data[i]);
+    }
+    Serial.println();
+    
     if (recvCallBack != NULL) {
         recvCallBack(mac_addr, data, data_len);
     }
@@ -174,7 +177,7 @@ void EspNowSta::sendData(uint8_t *peer_addr, void *buf, int len) {
 
 void EspNowSta::broadcast() {
     uint8_t peer_addr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-    const uint8_t identificationByte = 0xAA;
+    const uint8_t identificationByte = 0xaa;
     uint8_t req[] = {0xaa, 0x66, identificationByte};
     sendData(peer_addr, req, sizeof(req));
 }
@@ -193,7 +196,7 @@ void EspNowSta::ackPeer(uint8_t *peer_addr) {
         addToList(peer_addr, true);
     }
     if (res != ADD_PEER_ERROR) {
-        const uint8_t identificationByte = 0xAA;
+        const uint8_t identificationByte = 0xaa;
         uint8_t ackdata[] = {0xaa, 0x77 ,identificationByte};
         Serial.print("macaddress");
         for (int i = 0; i < 6; i++) {
