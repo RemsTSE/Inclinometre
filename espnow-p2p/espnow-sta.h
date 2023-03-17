@@ -20,6 +20,7 @@ struct peerList {
     esp_now_peer_info_t list[40];
     char isPaired[40];
     uint8_t count = 0;
+    uint8_t ttl[40];
 };
 
 class EspNowSta {
@@ -37,10 +38,12 @@ public:
     }
     int8_t init();
     void broadcast();
+    void updateTTL();
     void ackPeer(uint8_t *peer_addr);
     static void sendData(uint8_t *peer_addr, void *buff, int len);
     void multicastSendData(void *buf, int len);
     static peerList peerlist;
+    void removePeer(uint8_t *peer_addr);
 
 protected:
     static bool isBroadcasting;

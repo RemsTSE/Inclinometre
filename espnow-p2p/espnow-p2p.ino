@@ -11,6 +11,7 @@ int choice;
 int lastPeerCount;
 int messageCount;
 Ticker broadcastTicker;
+Ticker ttlTicker;
 IMU imu;
 
 void setLcd() {
@@ -24,13 +25,13 @@ void setLcd() {
 
 void onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     const uint8_t identificationByte = 0xaa;
-    if (data_len == 3 && data[0] == 0xaa && data[1] == 0x66) {
+    if (data_len == 3 && data[0] == 0xaa && data[1] == 0x66 && data[2] == identificationByte) {
         if (lastPeerCount < espnow.peerlist.count) {
             lastPeerCount = espnow.peerlist.count;
             espnow.ackPeer(const_cast<uint8_t*>(mac_addr));
             printPeerList();
         }
-    } else if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {        
+    } else if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {       
         printPeerList();
     } else {
         messageCount++;
@@ -44,6 +45,16 @@ void broadcast() {
     espnow.broadcast();
 }
 
+void updateTTL() {
+    for (int i = 0; i < espnow.peerlist.count; i++) {
+            espnow.peerlist.ttl[i]--;
+            Serial.printf("ttl[%d]: %d\r\n", i, espnow.peerlist.ttl[i]);
+            if (espnow.peerlist.ttl[i] == 0) {
+                espnow.removePeer(espnow.peerlist.list[i].peer_addr);
+                printPeerList();
+            }
+        }
+}
 void setup() {
     M5.begin();
     M5.IMU.Init();
@@ -58,6 +69,7 @@ void setup() {
     printPeerList();
 
     broadcastTicker.attach_ms(1000, broadcast);
+    ttlTicker.attach_ms(1000, updateTTL);
 }
 
 void printPeerList() {
