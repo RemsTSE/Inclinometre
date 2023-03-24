@@ -17,8 +17,7 @@ void IMU::getData(){
         M5.IMU.getAhrsData(
             &pitch, &roll, &yaw);  
          
-        Serial.printf("pitch,  roll\n");
-        Serial.printf("%5.2f  %5.2f  \n", pitch, roll);
+        Serial.printf("> | pitch,  roll : %5.2f  %5.2f  \n", pitch, roll);
 
 
         // M5.Lcd.setCursor(0, 120);

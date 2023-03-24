@@ -17,10 +17,10 @@ typedef void (*recvCB)(const uint8_t *mac_addr, const uint8_t *data, int data_le
 typedef void (*sendCB)(const uint8_t *, esp_now_send_status_t);
 
 struct peerList {
-    esp_now_peer_info_t list[40];
-    char isPaired[40];
+    esp_now_peer_info_t list[2];
+    char isPaired[2];
     uint8_t count = 0;
-    uint8_t ttl[40];
+    uint8_t ttl[2];
 };
 
 class EspNowSta {

@@ -22,15 +22,14 @@ int8_t EspNowSta::init(void) {
 
     WiFi.disconnect();
     if (esp_now_init() == ESP_OK) {
-        Serial.println("ESPNow Init Success");
+        Serial.println(":) | ESPNow Init Success");
     } else {
-        Serial.println("ESPNow Init Failed");
+        Serial.println(":( | ESPNow Init Failed");
         // Retry InitESPNow, add a counte and then restart?
         // InitESPNow();
         // or Simply Restart
         ESP.restart();
     }
-
     esp_now_register_send_cb(onDataSent);
     esp_now_register_recv_cb(onDataRecv);
 
@@ -60,7 +59,7 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
 
     if (isBroadcasting) {
         if (data_len == 3 && data[0] == 0xaa && data[1] == 0x77 && data[2] == identificationByte) {
-            Serial.printf("recv peer confirm: ");
+            Serial.printf("< | recv peer confirm: ");
             Serial.println(macStr);
             if (ensurePeer(mac_addr) == ADD_PEER_SUCCESS) {
                 addToList(mac_addr, true);
@@ -69,7 +68,7 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
     }
 
     if (data_len == 3 && data[0] == 0xaa && data[1] == 0x66 && data[2] == identificationByte) {
-        Serial.printf("recv peer broadcast: ");
+        Serial.printf("< | recv peer broadcast: ");
         Serial.println(macStr);
         if (peerIndex(mac_addr, false) == -1) {
             addToList(mac_addr, false);
@@ -80,8 +79,10 @@ void EspNowSta::onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int dat
             }
         }
     }
-
-    Serial.printf("recv data from %s: ", macStr);
+    if (peerIndex(mac_addr, false) == -1) {
+        return;
+    }
+    Serial.printf("< | recv data from %s: ", macStr);
     Serial.printf("len: %d", data_len);
     for (int i = 0; i < data_len; i++) {
         Serial.printf(" %02x", data[i]);
@@ -125,7 +126,7 @@ void EspNowSta::addToList(const uint8_t *peer_addr, bool isPaired) {
 }
 
 int8_t EspNowSta::ensurePeer(const uint8_t *peer_addr) {
-    Serial.print("Peer Status: ");
+    Serial.print("! | Peer Status: ");
     // check if the peer exists
     if (esp_now_is_peer_exist(peer_addr)) {
         // Peer already paired.
@@ -214,10 +215,9 @@ void EspNowSta::ackPeer(uint8_t* peer_addr) {
     if (res != ADD_PEER_ERROR) {
         const uint8_t identificationByte = 0xaa;
         uint8_t ackdata[] = { 0xaa, 0x77, identificationByte };
-        Serial.print("macaddress ");
-        for (int i = 0; i < 6; i++) {
-            Serial.printf("%x:", peer_addr[i]);
-        }
+        Serial.print("> | macaddress ");
+        Serial.printf("%x:%x:%x:%x:%x:%x\n", peer_addr[0], peer_addr[1], peer_addr[2], peer_addr[3], peer_addr[4], peer_addr[5]);
+        
         Serial.println();
         sendData(peer_addr, ackdata, sizeof(ackdata));
     }
