@@ -22,6 +22,7 @@ void removePeer(uint8_t index)
     if (index < espnow.peerlist.count)
     {
         espnow.peerlist.count--;
+        lastPeerCount--;
         for (uint8_t i = index; i < espnow.peerlist.count; i++)
         {
             espnow.peerlist.list[i] = espnow.peerlist.list[i + 1];
@@ -31,6 +32,8 @@ void removePeer(uint8_t index)
             espnow.peerlist.lastSeen[i] = espnow.peerlist.lastSeen[i + 1];
         }
     }
+    M5.Lcd.clear();
+    printPeerList();
     esp_now_del_peer(espnow.peerlist.list[index].peer_addr);
 }
 
@@ -42,7 +45,6 @@ void removeOfflinePeers()
         if (currentTime - espnow.peerlist.lastSeen[i] > PEER_TTL)
         {
             removePeer(i);
-            printPeerList();
             i--;
         }
     }
