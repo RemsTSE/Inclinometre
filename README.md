@@ -15,9 +15,9 @@ Le projet vise à développer un programme permettant de simuler un inclinomètr
 4. Une fois qu'un appareil reçoit un message broadcast, l'appareil envoie les informations suivantesen entier:
     - l'angle de roulis
     - l'angle de tangage
-![](diagram_sequence.png)
-1. Si le TTL d'un appareil est dépassé, l'appareil est supprimé de la liste des appareils connectés
+5. Si le TTL d'un appareil est dépassé, l'appareil est supprimé de la liste des appareils connectés
 
+![](diagram_sequence.png)
 
 ## Affichage de l'interface utilisateur
 
